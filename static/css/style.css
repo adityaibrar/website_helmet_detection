@@ -1,0 +1,31 @@
+/* CSS untuk halaman utama */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+/* CSS untuk halaman hasil deteksi */
+h1 {
+    color: #333;
+}
+
+p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* CSS untuk elemen video */
+video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* CSS untuk pesan kesalahan */
+.error {
+    color: #ff0000;
+    font-weight: bold;
+}
