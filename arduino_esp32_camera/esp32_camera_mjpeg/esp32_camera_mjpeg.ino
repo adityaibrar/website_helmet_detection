@@ -5,12 +5,8 @@
 
 #define CAMERA_MODEL_AI_THINKER
 
-#include "camera_pins.h"
-
-
-const char* SSID1 = "Mess";
-const char* PWD1 = "sandinyaanu";
-
+#define SSID1 "ssid-name"
+#define PWD1 "password"
 
 OV2640 cam;
 
@@ -25,8 +21,9 @@ const int hdrLen = strlen(HEADER);
 const int bdrLen = strlen(BOUNDARY);
 const int cntLen = strlen(CTNTTYPE);
 
-void handle_jpg_stream(void)
-{
+const int LED_PIN  = 4;
+
+void handle_jpg_stream(void) {
   char buf[32];
   int s;
 
@@ -35,8 +32,7 @@ void handle_jpg_stream(void)
   client.write(HEADER, hdrLen);
   client.write(BOUNDARY, bdrLen);
 
-  while (true)
-  {
+  while (true) {
     if (!client.connected()) break;
     cam.run();
     s = cam.getSize();
@@ -48,24 +44,7 @@ void handle_jpg_stream(void)
   }
 }
 
-const char JHEADER[] = "HTTP/1.1 200 OK\r\n" \
-                       "Content-disposition: inline; filename=capture.jpg\r\n" \
-                       "Content-type: image/jpeg\r\n\r\n";
-const int jhdLen = strlen(JHEADER);
-
-void handle_jpg(void)
-{
-  WiFiClient client = server.client();
-
-  cam.run();
-  if (!client.connected()) return;
-
-  client.write(JHEADER, jhdLen);
-  client.write((char *)cam.getfb(), cam.getSize());
-}
-
-void handleNotFound()
-{
+void handleNotFound() {
   String message = "Server is running!\n\n";
   message += "URI: ";
   message += server.uri();
@@ -77,71 +56,64 @@ void handleNotFound()
   server.send(200, "text / plain", message);
 }
 
-void setup()
-{
-
+void setup() {
   Serial.begin(115200);
-  //while (!Serial);            //wait for serial connection.
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;
-  config.pin_d0 = Y2_GPIO_NUM;
-  config.pin_d1 = Y3_GPIO_NUM;
-  config.pin_d2 = Y4_GPIO_NUM;
-  config.pin_d3 = Y5_GPIO_NUM;
-  config.pin_d4 = Y6_GPIO_NUM;
-  config.pin_d5 = Y7_GPIO_NUM;
-  config.pin_d6 = Y8_GPIO_NUM;
-  config.pin_d7 = Y9_GPIO_NUM;
-  config.pin_xclk = XCLK_GPIO_NUM;
-  config.pin_pclk = PCLK_GPIO_NUM;
-  config.pin_vsync = VSYNC_GPIO_NUM;
-  config.pin_href = HREF_GPIO_NUM;
-  config.pin_sscb_sda = SIOD_GPIO_NUM;
-  config.pin_sscb_scl = SIOC_GPIO_NUM;
-  config.pin_pwdn = PWDN_GPIO_NUM;
-  config.pin_reset = RESET_GPIO_NUM;
+  config.pin_d0 = 5;
+  config.pin_d1 = 18;
+  config.pin_d2 = 19;
+  config.pin_d3 = 21;
+  config.pin_d4 = 36;
+  config.pin_d5 = 39;
+  config.pin_d6 = 34;
+  config.pin_d7 = 35;
+  config.pin_xclk = 0;
+  config.pin_pclk = 22;
+  config.pin_vsync = 25;
+  config.pin_href = 23;
+  config.pin_sscb_sda = 26;
+  config.pin_sscb_scl = 27;
+  config.pin_pwdn = 32;
+  config.pin_reset = -1;
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
 
   // Frame parameters
-  //  config.frame_size = FRAMESIZE_UXGA;
-  config.frame_size = FRAMESIZE_QVGA;
+  config.frame_size = FRAMESIZE_SVGA;
   config.jpeg_quality = 12;
   config.fb_count = 2;
 
-#if defined(CAMERA_MODEL_ESP_EYE)
-  pinMode(13, INPUT_PULLUP);
-  pinMode(14, INPUT_PULLUP);
-#endif
+  pinMode(LED_PIN, OUTPUT);
+  digitalWrite(LED_PIN, 10);
 
   cam.init(config);
 
   IPAddress ip;
 
-  // WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(SSID1, PWD1);
-  Serial.println(F("Connecting To WiFi"));
-  while (WiFi.status() != WL_CONNECTED)
-  {
+  Serial.println("Connecting To WiFi");
+
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(F("."));
   }
   ip = WiFi.localIP();
-  Serial.println(F("WiFi connected"));
+  Serial.print("WiFi connected");
   Serial.println("");
   Serial.println(ip);
   Serial.print("Stream Link: http://");
   Serial.print(ip);
-  Serial.println("/mjpeg/1");
-  server.on("/mjpeg/1", HTTP_GET, handle_jpg_stream);
-  server.on("/jpg", HTTP_GET, handle_jpg);
+  Serial.println("/K2A/1");
+  server.on("/K2A/1", HTTP_GET, handle_jpg_stream);
   server.onNotFound(handleNotFound);
   server.begin();
 }
 
-void loop()
-{
+void loop() {
   server.handleClient();
+  delay(10000);
 }
