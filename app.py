@@ -1,24 +1,28 @@
-from flask import Flask, render_template
-from ultralytics import YOLO
+from flask import Flask, render_template, session, Response
+from YoloVideo import video_detection
+import cv2
 
 app = Flask(__name__)
 
-API_URL = 0
+app.config['SECRET_KEY'] = 'taufiq'
 
-@app.route('/')
-def home():
-    return "Selamat datang di Aplikasi Deteksi Pelanggaran"
+import cv2
 
-@app.route('/detect')
-def detect_objects():
-    try:
-        model = YOLO('model/best.pt')
-        result = model(source=API_URL, conf=0.6)
-        object_count = len(result.pred[0])
-        return render_template('pages/hasil_deteksi.html', object_count= object_count, api_url= API_URL)
-    except Exception as e:
-        error_message = f"Terjadi kesalahan saat mengakses kamera CCTV: {str(e)}"
-        return render_template('pages/error.html', error_message = error_message)
-    
-if __name__ == '__main__':
-    app.run()
+def generate_frame(path):
+    for frame in video_detection(path):
+        _, buffer = cv2.imencode('.jpg', frame)
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+
+
+@app.route("/", methods=['GET', 'POST'])
+def webcam():
+    session.clear()
+    return render_template('ui.html')
+
+@app.route('/webapp')
+def webapp():
+    return Response(generate_frame(path=0), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+if __name__ == "__main__":
+    app.run(debug=True)
