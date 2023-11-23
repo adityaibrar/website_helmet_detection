@@ -11,8 +11,8 @@ def video_detection(path):
     frame_height=int(cap.get(4))
     
 
-    model=YOLO("model/Model.pt")
-    classNames = ['helmet', 'motor', 'nohelmet']
+    model=YOLO("model/Model2.pt")
+    classNames = ['helmet', 'nohelmet', 'raider']
     while True:
         success, img = cap.read()
         results=model(img,stream=True)
