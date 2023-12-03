@@ -5,8 +5,8 @@
 
 #define CAMERA_MODEL_AI_THINKER
 
-#define SSID1 "ssid-name"
-#define PWD1 "password"
+#define SSID1 "Mess"
+#define PWD1 "sandinyaanu"
 
 OV2640 cam;
 
@@ -44,18 +44,6 @@ void handle_jpg_stream(void) {
   }
 }
 
-void handleNotFound() {
-  String message = "Server is running!\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET) ? "GET" : "POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  server.send(200, "text / plain", message);
-}
-
 void setup() {
   Serial.begin(115200);
 
@@ -86,8 +74,8 @@ void setup() {
   config.jpeg_quality = 12;
   config.fb_count = 2;
 
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN, 10);
+  // pinMode(LED_PIN, OUTPUT);
+  // digitalWrite(LED_PIN, 50);
 
   cam.init(config);
 
@@ -109,7 +97,6 @@ void setup() {
   Serial.print(ip);
   Serial.println("/K2A/1");
   server.on("/K2A/1", HTTP_GET, handle_jpg_stream);
-  server.onNotFound(handleNotFound);
   server.begin();
 }
 
