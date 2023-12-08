@@ -15,7 +15,8 @@ def draw_rectangle_and_text(frame, bbox, text, color):
 
     cv2.circle(frame, (cxm, cym), 4, color, -1)
     cv2.rectangle(frame, (x, y), (w, h), color, 1)
-    cvzone.putTextRect(frame, f'{text} {id1}', (x, y), 1, 1)
+    cvzone.putTextRect(frame, f'{text}', (x, y), 1, 1, colorR=( 255, 255, 255), colorT=( 0, 0, 0))
+
 
 def objectcount(frame, model, class_list, tracker1, tracker2, tracker3, counter_raider, counter_nohelmet, counter_helmet):
     results = model(source=frame, conf=0.5)
