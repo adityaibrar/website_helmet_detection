@@ -7,15 +7,13 @@ import cvzone
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'taufiq'
-
 def draw_rectangle_and_text(frame, bbox, text, color):
     x, y, w, h, id1 = bbox
     cxm, cym = (x + w) // 2, (y + h) // 2
 
     cv2.circle(frame, (cxm, cym), 4, color, -1)
     cv2.rectangle(frame, (x, y), (w, h), color, 1)
-    cvzone.putTextRect(frame, f'{text}', (x, y), 1, 1, colorR=( 255, 255, 255), colorT=( 0, 0, 0))
+    cvzone.putTextRect(frame, f'{text} {id1}', (x, y), 1, 1, colorR=( 255, 255, 255), colorT=( 0, 0, 0))
 
 
 def objectcount(frame, model, class_list, tracker1, tracker2, tracker3, counter_raider, counter_nohelmet, counter_helmet):
@@ -28,7 +26,7 @@ def objectcount(frame, model, class_list, tracker1, tracker2, tracker3, counter_
 
     offset = 6
     
-    cy1 = 424
+    cy1 = 300
 
     for _, row in bboxes.iterrows():
         x1, y1, x2, y2, _, d = row
@@ -126,7 +124,7 @@ def generate_frame():
         )
 
         # Draw the counting line
-        cy1 = 424
+        cy1 = 300
         cv2.line(frame, (2, cy1), (1300, cy1), (0, 230, 255), 10)
 
         current_raider_count = len(counter_raider)
