@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Object</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+</head>
+<body>
+  <!-- Responsive navbar-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#!">K2</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Page header with logo and tagline-->
+  <header class="py-5 bg-light border-bottom mb-4">
+    <div class="container">
+      <div class="text-center my-5">
+        <h1 class="fw-bolder">Welcome to My Project</h1>
+        <p class="lead mb-0">Project Untuk Deteksi Object menggunakan Yolo</p>
+      </div>
+    </div>
+  </header>
+  <!-- Page content-->
+  <div class="container">
+    <div class="row">
+      <!-- Blog entries-->
+      <div class="col-lg-8">
+        <!-- Featured blog post-->
+        <div class="card mb-4">
+          <img class="card-img-top" src="{{ url_for('webapp') }}" alt="..." />
+        </div>
+        <!-- Nested row for non-featured blog posts-->
+        
+        <!-- Pagination-->
+        
+      </div>
+      <!-- Side widgets-->
+      <div class="col-lg-4">
+        <!-- Categories widget-->
+        <div class="card mb-4">
+            <div class="card-header">Raider</div>
+            <div class="card-body">
+                <p id="raider_count">{{ raider_counter }}</p>
+            </div>
+        </div>
+        <!-- Side widget-->
+        <div class="card mb-4">
+            <div class="card-header">No Helmet</div>
+            <div class="card-body">
+              <p id="nohelmet_count">{{ nohelmet_counter }}</p>
+            </div>
+        </div>
+        <!-- Side widget-->
+        <div class="card mb-4">
+            <div class="card-header">Helmet</div>
+            <div class="card-body">
+              <p id="helmet_count">{{ helmet_counter }}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+  </div>
+  <!-- Footer-->
+  <footer class="py-5 bg-dark">
+    <div class="container"><p class="m-0 text-center text-white">Copyright &copy; K2 2023</p></div>
+  </footer>
+  <!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+<script>
+    // Menggunakan JavaScript untuk memperbarui nilai-nilai count secara dinamis
+    setInterval(function () {
+        fetch('/get_counts')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('raider_count').innerText = data.raider_count;
+                document.getElementById('nohelmet_count').innerText = data.nohelmet_count;
+                document.getElementById('helmet_count').innerText = data.helmet_count;
+            });
+    }, 1000);  // Update setiap 1000 milidetik (1 detik)
+</script>
+</body>
+</html>
